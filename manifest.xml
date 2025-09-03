@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="MailApp">
+
+  <!--
+    This manifest defines a prototype Outlook add-in that adds a custom group to the
+    message read surface. The group contains a single button labelled "Scanner la signature"
+    which opens a task pane. The task pane reads the currently displayed message,
+    scans the sender’s signature for a French phone number and a full name, then
+    allows the user to create a new contact via Microsoft Graph. Replace the
+    placeholder values (e.g. App ID, domain, resource URI) with your own values
+    when deploying.
+  -->
+
+  <Id>f6c3d5c9-aaaa-bbbb-cccc-1234567890ab</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Prototype Outlook Add‑in</ProviderName>
+  <DefaultLocale>fr-FR</DefaultLocale>
+  <DisplayName DefaultValue="Outils Contact - Signature"/>
+  <Description DefaultValue="Analyse la signature d’un mail et ajoute l’expéditeur aux contacts."/>
+  <!-- Placeholder icons; ensure these URLs point to your hosted resources -->
+  <IconUrl DefaultValue="https://votre-domaine.example/outlook_addin/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://votre-domaine.example/outlook_addin/assets/icon-80.png"/>
+  <SupportUrl DefaultValue="https://votre-domaine.example/support"/>
+
+  <!-- Permissions: only read the currently selected message -->
+  <Permissions>ReadItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIsRule" ItemType="Message" FormType="Read"/>
+  </Rule>
+
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
+
+  <!-- Single sign-on configuration. Replace the Id and Resource with your own
+       Azure AD app registration values. Scopes include Contacts.ReadWrite for
+       contact creation. -->
+  <WebApplicationInfo>
+    <Id>00000000-1111-2222-3333-444444444444</Id>
+    <Resource>api://votre-domaine.example/f6c3d5c9-aaaa-bbbb-cccc-1234567890ab</Resource>
+    <Scopes>
+      <Scope>Contacts.ReadWrite</Scope>
+      <Scope>openid</Scope>
+      <Scope>profile</Scope>
+      <Scope>email</Scope>
+      <Scope>offline_access</Scope>
+    </Scopes>
+  </WebApplicationInfo>
+
+  <!-- Version overrides define the UI for the add-in using the 1.0 version schema -->
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Requirements>
+      <Sets DefaultMinVersion="1.8">
+        <Set Name="Mailbox"/>
+      </Sets>
+    </Requirements>
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <Runtimes>
+          <!-- Defines the files used by the runtime. A long lifetime
+               keeps the functions page loaded between calls. -->
+          <Runtime resid="Taskpane.Url" lifetime="long" />
+          <Runtime resid="Functions.Url" />
+        </Runtimes>
+
+        <ExtensionPoint xsi:type="MessageReadCommandSurface">
+          <OfficeTab id="TabDefault">
+            <Group id="grpTools" label="Outils Perso">
+              <Control xsi:type="Button" id="btnScanSig">
+                <Label resid="resLabelAddContact"/>
+                <Supertip>
+                  <Title resid="resLabelAddContact"/>
+                  <Description resid="resDescAddContact"/>
+                </Supertip>
+                <Icon>
+                  <bt:Image size="16" resid="icon16"/>
+                  <bt:Image size="32" resid="icon32"/>
+                  <bt:Image size="80" resid="icon80"/>
+                </Icon>
+                <!-- Opens the task pane when clicked -->
+                <Action xsi:type="ShowTaskpane">
+                  <TaskpaneId>btnScanSigPane</TaskpaneId>
+                  <SourceLocation resid="Taskpane.Url"/>
+                </Action>
+              </Control>
+            </Group>
+          </OfficeTab>
+        </ExtensionPoint>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <!-- Map the icon identifiers to actual image URLs. Replace with your own hosted icons. -->
+        <bt:Image id="icon16" DefaultValue="https://votre-domaine.example/outlook_addin/assets/icon-16.png"/>
+        <bt:Image id="icon32" DefaultValue="https://votre-domaine.example/outlook_addin/assets/icon-32.png"/>
+        <bt:Image id="icon80" DefaultValue="https://votre-domaine.example/outlook_addin/assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <!-- Define the task pane and functions page locations. Host these files over HTTPS. -->
+        <bt:Url id="Taskpane.Url" DefaultValue="https://votre-domaine.example/outlook_addin/taskpane.html"/>
+        <bt:Url id="Functions.Url" DefaultValue="https://votre-domaine.example/outlook_addin/functions.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="resLabelAddContact" DefaultValue="Scanner la signature"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="resDescAddContact" DefaultValue="Analyse le message en cours, repère Nom/Prénom et téléphone, puis propose de créer un contact."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

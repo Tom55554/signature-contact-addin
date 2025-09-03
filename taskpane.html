@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Scanner la signature</title>
+  <!--
+    Content Security Policy to restrict external resources. Adjust connect-src
+    values if hosting your pages from a different domain or calling other APIs.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://appsforoffice.microsoft.com https://*.officeapps.live.com https://outlook.office.com https://graph.microsoft.com; connect-src 'self' https://graph.microsoft.com https://outlook.office.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://appsforoffice.microsoft.com 'unsafe-inline'; img-src 'self' data:;" />
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+  <script defer src="/taskpane.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      padding: 12px;
+    }
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+    .log {
+      margin-top: 12px;
+      white-space: pre-wrap;
+      font-size: 12px;
+      color: #444;
+    }
+    .field {
+      margin: 8px 0;
+    }
+    input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .ok { color: #008000; }
+    .ko { color: #a00; }
+  </style>
+</head>
+<body>
+  <h3>Scanner la signature</h3>
+  <p>Analyse le message affiché, propose les champs détectés, puis crée un contact.</p>
+
+  <div class="field">
+    <label for="fullName">Nom complet</label>
+    <input id="fullName" placeholder="Nom Prénom" />
+  </div>
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" placeholder="expe@example.com" />
+  </div>
+  <div class="field">
+    <label for="phone">Téléphone</label>
+    <input id="phone" placeholder="0X XX XX XX XX" />
+  </div>
+
+  <button id="btnScan">Analyser depuis le mail</button>
+  <button id="btnCreate">Créer le contact</button>
+
+  <div id="log" class="log"></div>
+</body>
+</html>
