@@ -175,7 +175,12 @@ async function createContact() {
   try {
     const displayName = document.getElementById("fullName").value.trim();
     const email = document.getElementById("email").value.trim();
-    const phone = document.getElementById("phone").value.trim();
+    const phone = normalizePhone(document.getElementById("phone").value.trim());
+
+    if (!displayName && !email && !phone) {
+      log("Impossible de créer le contact : renseigne au moins un nom, un email ou un téléphone.", "ko");
+      return;
+    }
     const token = await getGraphToken();
     const created = await createContactOnGraph(token, displayName, email, phone);
     log(
